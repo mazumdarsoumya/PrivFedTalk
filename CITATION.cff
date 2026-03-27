@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "PrivFedTalk"
+version: "0.1.0"
+type: software
+authors:
+  - family-names: "Mazumdar"
+    given-names: "Soumya"
+repository-code: "https://github.com/mazumdarsoumya/PrivFedTalk"
+abstract: "Research software for federated diffusion-based talking-head generation with LoRA adapters, Temporal-Denoising Consistency, identity-stable federated aggregation, and client-level privacy mechanisms."
+keywords:
+  - federated learning
+  - talking-head generation
+  - diffusion models
+  - LoRA
+  - privacy
+  - audiovisual generation
+license: MIT
+url: "https://github.com/mazumdarsoumya/PrivFedTalk"

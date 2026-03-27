@@ -1,0 +1,26 @@
+name: privfedtalk
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - numpy>=1.26
+  - pyyaml>=6.0
+  - tqdm>=4.66
+  - pandas>=2.2
+  - scipy>=1.11
+  - matplotlib>=3.8
+  - einops>=0.7
+  - rich>=13.7
+  - pytest>=8.0
+  - pillow>=10.0
+  - opencv>=4.8
+  - ffmpeg
+  - av
+  - pip:
+      - setuptools>=68
+      - wheel
+# Notes:
+# 1) This is the portable base environment.
+# 2) Install the appropriate torch/torchvision/torchaudio build AFTER activation.
+# 3) Then install the package itself with: pip install -e . --no-deps
