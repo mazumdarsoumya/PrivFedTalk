@@ -1,2 +1,548 @@
-# PrivFedTalk
-A privacy-preserving federated framework for personalized talking-head generation. It combines Latent Diffusion with LoRA-style identity adapters, Temporal-Denoising Consistency (TDC), and Identity-Stable Federated Aggregation (ISFA) to enable high-fidelity, flicker-free synthesis without sharing sensitive raw facial data.
+
+<div align="center">
+
+  # PrivFedTalk
+  
+**Federated talking-head generation with diffusion, LoRA personalization, privacy knobs, and just enough chaos to keep the GPUs humble.**
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red)
+![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-brightgreen)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Status](https://img.shields.io/badge/Research%20Code-Active-success)
+
+</div>
+
+---
+
+## ✨ What is PrivFedTalk?
+
+**PrivFedTalk** is a research codebase for **federated diffusion-based talking-head generation** with **parameter-efficient personalization**.
+
+In this framework:
+- one **shared conditional diffusion backbone** is learned across clients,
+- each client keeps **LoRA identity adapters** locally,
+- temporal quality is pushed using **Temporal-Denoising Consistency (TDC)**,
+- privacy is handled with **client-level differential privacy** and a **secure-aggregation simulation interface**,
+- and the server can aggregate with **FedAvg**, **FedProx**, or **Identity-Stable Federated Aggregation (ISFA)**.
+
+So yes, it is a talking-head repository.
+And yes, it also contains privacy, federated learning, diffusion, and adapter tuning.
+Because apparently one difficult idea was not dramatic enough.
+
+---
+
+## 🔥 Why this repo exists
+
+This repository is built for people who want to:
+- study **federated personalization** for talking-head generation,
+- reproduce **adapter-only federated training**,
+- compare **FedAvg / FedProx / ISFA**-style aggregation behaviors,
+- export **paper tables, plots, and experiment artifacts**,
+- and actually run the code on real systems instead of admiring equations from a distance.
+
+The project is intentionally structured to be:
+- **research-friendly**,
+- **hackable**,
+- **modular**,
+- and reasonably survivable on shared GPU machines when configured carefully.
+
+---
+
+## 🧠 Core method ingredients
+
+PrivFedTalk includes the following major pieces:
+
+### Shared conditional diffusion backbone
+- audio conditioning,
+- identity conditioning,
+- diffusion scheduling,
+- latent/video generation modules.
+
+### Client-local LoRA identity adapters
+- parameter-efficient personalization,
+- adapter-only local optimization,
+- no need to federate the full backbone every round.
+
+### Temporal-Denoising Consistency (TDC)
+- encourages temporal coherence,
+- stabilizes denoising across frames,
+- helps reduce frame-to-frame flicker.
+
+### Identity / perceptual / lip-sync related losses
+- identity preservation,
+- perceptual similarity,
+- synchronization-aware supervision.
+
+### Federated aggregation options
+- `fedavg`
+- `fedprox`
+- `isfa`
+
+### Privacy stack
+- client-level clipping,
+- Gaussian noise on adapter updates,
+- secure aggregation simulation interface.
+
+---
+
+## 🗂 Repository structure
+
+```text
+PrivFedTalk/
+├── assets/                     # pretrained assets / templates
+├── configs/                    # training / FL / paper configs
+│   ├── lrs3_privfedtalk_*.yaml
+│   ├── lrs3_fedavg_*.yaml
+│   ├── lrs3_fedprox_*.yaml
+│   ├── fl/
+│   ├── model/
+│   ├── train/
+│   └── paper/
+├── data/
+│   ├── LRS3/                   # expected dataset location
+│   ├── examples/
+│   └── README_DATA.md
+├── docs/
+│   ├── dataset_preparation.md
+│   ├── federated_protocol.md
+│   ├── method.md
+│   ├── metrics.md
+│   ├── privacy_notes.md
+│   └── troubleshooting_rhel9_l40.md
+├── experiments/
+├── outputs/                    # checkpoints / logs / samples / paper outputs
+├── scripts/                    # shell + helper python scripts
+├── src/privfedtalk/
+│   ├── cli/
+│   ├── data/
+│   ├── fl/
+│   ├── losses/
+│   ├── metrics/
+│   ├── models/
+│   ├── trainers/
+│   ├── utils/
+│   └── viz/
+├── tests/
+├── environment.yml
+├── pyproject.toml
+├── CITATION.cff
+└── LICENSE
+```
+
+---
+
+## ⚡ Quick start
+
+### 1) Create the environment
+
+```bash
+conda env create -f environment.yml
+conda activate privfedtalk
+```
+
+### 2) Install the correct PyTorch build for your OS
+
+Use the platform-specific section below.
+
+### 3) Install the package in editable mode
+
+```bash
+pip install -e . --no-deps
+```
+
+### 4) Sanity-check the environment
+
+```bash
+bash scripts/00_check_env.sh
+```
+
+### 5) Run federated training
+
+```bash
+python -m privfedtalk.cli.train_federated --config configs/default.yaml
+```
+
+If that works, congratulations.
+You are now legally allowed to say “the code runs on my machine.”
+
+---
+
+## 🧪 Main CLI entry points
+
+The package exposes the following script entry points through `pyproject.toml`:
+
+### Federated training
+```bash
+python -m privfedtalk.cli.train_federated --config configs/default.yaml
+# or
+privfedtalk-train --config configs/default.yaml
+```
+
+### Evaluation
+```bash
+python -m privfedtalk.cli.eval --config configs/default.yaml
+# or
+privfedtalk-eval --config configs/default.yaml
+```
+
+### Inference
+```bash
+python -m privfedtalk.cli.infer --config configs/default.yaml --out outputs/samples/demo.pt
+# or
+privfedtalk-infer --config configs/default.yaml --out outputs/samples/demo.pt
+```
+
+### Paper / export utilities
+```bash
+python -m privfedtalk.cli.export_artifacts --config configs/default.yaml --mode make_synthetic_data
+python -m privfedtalk.cli.export_artifacts --config configs/default.yaml --mode make_paper_artifacts
+python -m privfedtalk.cli.export_artifacts --config configs/default.yaml --mode export_latex_tables
+# or
+privfedtalk-export --config configs/default.yaml --mode make_paper_artifacts
+```
+
+### Convenience wrappers
+```bash
+bash scripts/00_check_env.sh
+bash scripts/02_prepare_data.sh
+bash scripts/03_train_federated.sh
+bash scripts/04_eval_all.sh
+bash scripts/05_make_paper_figures.sh
+```
+
+---
+
+## 🖥 OS-specific installation
+
+The base environment is shared, but PyTorch installation should be **OS-aware**.
+Because CUDA, MPS, and Windows wheels all enjoy being difficult in slightly different ways.
+
+---
+
+# 🐧 Linux setup (Ubuntu / Debian / RHEL / Rocky / Fedora)
+
+## Recommended for NVIDIA GPU users
+
+Check your GPU:
+
+```bash
+nvidia-smi
+```
+
+Install a CUDA-enabled PyTorch build. Example for CUDA 12.6 wheels:
+
+```bash
+python -m pip install --upgrade pip setuptools wheel
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+```
+
+Install PrivFedTalk without re-resolving torch:
+
+```bash
+pip install -e . --no-deps
+```
+
+Verify:
+
+```bash
+python - <<'PY'
+import torch, torchvision, torchaudio
+print('torch:', torch.__version__)
+print('torchvision:', torchvision.__version__)
+print('torchaudio:', torchaudio.__version__)
+print('cuda available:', torch.cuda.is_available())
+print('gpu count:', torch.cuda.device_count())
+for i in range(torch.cuda.device_count()):
+    print(i, torch.cuda.get_device_name(i))
+PY
+```
+
+## RHEL / L40 / cluster-style session
+
+```bash
+source ~/anaconda3/etc/profile.d/conda.sh
+conda activate privfedtalk
+cd /path/to/PrivFedTalk
+export PYTHONPATH="$(pwd)/src"
+export CUDA_VISIBLE_DEVICES=0,1
+export OMP_NUM_THREADS=8
+export MKL_NUM_THREADS=8
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+bash scripts/00_check_env.sh
+```
+
+If you are on RHEL with NVIDIA L40/L40S class hardware, also read:
+
+- `docs/troubleshooting_rhel9_l40.md`
+
+## Linux CPU-only fallback
+
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install -e . --no-deps
+```
+
+---
+
+# 🍎 macOS setup
+
+## Apple Silicon (M-series)
+
+Create and activate the Conda env first:
+
+```bash
+conda env create -f environment.yml
+conda activate privfedtalk
+```
+
+Install PyTorch with MPS support from the default index:
+
+```bash
+python -m pip install --upgrade pip setuptools wheel
+pip install torch torchvision torchaudio
+pip install -e . --no-deps
+```
+
+Verify:
+
+```bash
+python - <<'PY'
+import torch
+print('torch:', torch.__version__)
+print('mps available:', torch.backends.mps.is_available())
+print('mps built:', torch.backends.mps.is_built())
+PY
+```
+
+Run training on CPU or MPS depending on support and stability.
+For heavier experiments, Linux + CUDA is still the practical choice.
+
+## Intel macOS
+
+```bash
+python -m pip install --upgrade pip setuptools wheel
+pip install torch torchvision torchaudio
+pip install -e . --no-deps
+```
+
+---
+
+# 🪟 Windows setup
+
+Use **PowerShell** and preferably **Anaconda Prompt** or a shell where Conda is initialized.
+
+## 1) Create the environment
+
+```powershell
+conda env create -f environment.yml
+conda activate privfedtalk
+```
+
+## 2) Install PyTorch
+
+### CUDA-enabled Windows installation
+
+```powershell
+python -m pip install --upgrade pip setuptools wheel
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+```
+
+### CPU-only Windows installation
+
+```powershell
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+```
+
+## 3) Install the project
+
+```powershell
+pip install -e . --no-deps
+```
+
+## 4) Verify
+
+```powershell
+python - <<'PY'
+import torch
+print('torch:', torch.__version__)
+print('cuda available:', torch.cuda.is_available())
+print('gpu count:', torch.cuda.device_count())
+PY
+```
+
+## 5) Run training
+
+```powershell
+python -m privfedtalk.cli.train_federated --config configs/default.yaml
+```
+
+If PowerShell complains about scripts, welcome to Windows.
+Usually activating Conda properly and using `python -m ...` avoids drama.
+
+---
+
+## 📦 Dataset layout
+
+The repository expects data in a structure like:
+
+```text
+data/
+└── LRS3/
+    ├── <client_or_identity_id>/
+    │   ├── 50001.mp4
+    │   ├── 50001.txt
+    │   ├── 50002.mp4
+    │   └── 50002.txt
+    └── ...
+```
+
+For dataset preparation details, read:
+- `data/README_DATA.md`
+- `docs/dataset_preparation.md`
+
+---
+
+## 🏃 Common workflows
+
+## A. Minimal sanity run
+
+```bash
+python -m privfedtalk.cli.train_federated --config configs/default.yaml
+```
+
+## B. LRS3 PrivFedTalk run
+
+```bash
+python -m privfedtalk.cli.train_federated --config configs/lrs3_privfedtalk.yaml
+```
+
+## C. FedAvg baseline run
+
+```bash
+python -m privfedtalk.cli.train_federated --config configs/lrs3_fedavg_adapters.yaml
+```
+
+## D. FedProx baseline run
+
+```bash
+python -m privfedtalk.cli.train_federated --config configs/lrs3_fedprox_adapters.yaml
+```
+
+## E. Export paper artifacts
+
+```bash
+python -m privfedtalk.cli.export_artifacts --config configs/default.yaml --mode make_paper_artifacts
+bash scripts/05_make_paper_figures.sh
+```
+
+---
+
+## 🧰 Practical multi-GPU notes
+
+If you are running federated simulation on multiple GPUs:
+
+```bash
+export CUDA_VISIBLE_DEVICES=0,1
+export PYTHONPATH="$(pwd)/src"
+export OMP_NUM_THREADS=8
+export MKL_NUM_THREADS=8
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+```
+
+For shared machines:
+- reduce `local_batch_size`,
+- reduce `eval_batch_size`,
+- set `num_workers: 0` when debugging,
+- prefer adapter-only updates for lower memory,
+- use tmux/screen for long jobs.
+
+---
+
+## 🧪 Testing
+
+Run the unit tests with:
+
+```bash
+pytest -q
+```
+
+If a test fails, do not panic immediately.
+First check whether it is a real bug or just a missing dependency pretending to be a philosophy problem.
+
+---
+
+## 📈 Outputs you should expect
+
+Depending on the workflow, the repository writes artifacts under `outputs/`, such as:
+- global adapter checkpoints,
+- latest checkpoints,
+- personalized adapters,
+- logs and metric histories,
+- exported tables,
+- qualitative figures,
+- synthetic/demo outputs.
+
+---
+
+## 🛠 Troubleshooting highlights
+
+### `ImportError: cannot import name 'read_video' from torchvision.io`
+Pin to a torchvision version that still supports the legacy API used by the current code path.
+
+### PyAV missing
+Install it with either Conda or pip:
+
+```bash
+conda install -c conda-forge av ffmpeg -y
+# or
+pip install av
+```
+
+### GPU OOM
+Reduce:
+- `batch_size`
+- `local_batch_size`
+- `eval_batch_size`
+- LoRA rank
+- number of workers
+
+### Windows shell weirdness
+Prefer:
+
+```powershell
+python -m privfedtalk.cli.train_federated --config configs/default.yaml
+```
+
+instead of relying on shell script wrappers.
+
+---
+
+## 📚 Citation
+
+If this repository helps your research, please cite it using the metadata in `CITATION.cff`.
+
+A BibTeX-style entry can be generated from GitHub once the repository is published with its final URL.
+
+---
+
+## 📄 License
+
+This project is released under the **MIT License**.
+See `LICENSE` for the full text.
+
+---
+
+## 🙌 Final note
+
+PrivFedTalk is research code.
+That means it is powerful, flexible, and occasionally behaves like it learned diffusion from stress instead of data.
+
+Still, the repository is designed so that a careful user can:
+- install it,
+- run it,
+- inspect it,
+- modify it,
+- and turn experiments into actual paper artifacts.
+
+Which, for a research repo, is already a surprisingly high level of emotional maturity.
