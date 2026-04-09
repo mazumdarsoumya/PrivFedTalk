@@ -1,0 +1,1 @@
+metrics: [identity, sync, lpips, temporal_jitter]

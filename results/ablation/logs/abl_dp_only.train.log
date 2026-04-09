@@ -1,0 +1,40 @@
+/home/vineet/anaconda3/envs/privfedtalk_rhel/lib/python3.10/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/home/vineet/anaconda3/envs/privfedtalk_rhel/lib/python3.10/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=AlexNet_Weights.IMAGENET1K_V1`. You can also use `weights=AlexNet_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/home/vineet/PycharmProjects/PrivFedTalk/src/privfedtalk/cli/train_federated.py:220: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=use_amp and device.type == "cuda")
+/home/vineet/PycharmProjects/PrivFedTalk/src/privfedtalk/cli/train_federated.py:231: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=use_amp and device.type == "cuda"):
+/home/vineet/PycharmProjects/PrivFedTalk/src/privfedtalk/cli/train_federated.py:451: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=use_amp and device.type == "cuda"):
+dataset       : lrs3
+root          : /home/vineet/PycharmProjects/PrivFedTalk/data/LRS3
+manifest      : /DATA/vineet/PrivFedTalk/outputs_lrs3/manifests/lrs3_split.csv
+num_clients   : 3532
+clients/round : 10
+rounds        : 30
+agg           : fedavg
+device        : cuda
+gpu count     : 1
+gpu name      : NVIDIA L40S
+Setting up [LPIPS] perceptual loss: trunk [alex], v[0.1], spatial [off]
+Loading model from: /home/vineet/anaconda3/envs/privfedtalk_rhel/lib/python3.10/site-packages/lpips/weights/v0.1/alex.pth
+Round 001/30 | time=7.82s | val_loss=1.334662 | val_acc=0.753701 | clients=10
+Round 002/30 | time=4.78s | val_loss=1.335627 | val_acc=0.754803 | clients=10
+Round 003/30 | time=5.17s | val_loss=1.338848 | val_acc=0.753929 | clients=10
+Round 004/30 | time=5.19s | val_loss=1.336027 | val_acc=0.755175 | clients=10
+Round 005/30 | time=4.61s | val_loss=1.337296 | val_acc=0.754646 | clients=10
+Round 006/30 | time=4.93s | val_loss=1.336496 | val_acc=0.754644 | clients=10
+Round 007/30 | time=5.31s | val_loss=1.332940 | val_acc=0.755238 | clients=10
+Round 008/30 | time=4.66s | val_loss=1.336730 | val_acc=0.753780 | clients=10
+Round 009/30 | time=5.33s | val_loss=1.337017 | val_acc=0.754329 | clients=10
+Round 010/30 | time=4.63s | val_loss=1.336269 | val_acc=0.754940 | clients=10
+Round 011/30 | time=4.90s | val_loss=1.337783 | val_acc=0.754259 | clients=10
+Round 012/30 | time=4.72s | val_loss=1.339334 | val_acc=0.754447 | clients=10
+Round 013/30 | time=5.33s | val_loss=1.336879 | val_acc=0.754423 | clients=10
+Round 014/30 | time=4.93s | val_loss=1.335230 | val_acc=0.755521 | clients=10
+Round 015/30 | time=4.85s | val_loss=1.335568 | val_acc=0.755319 | clients=10
+Early stopping at round 015; best_round=007; best_val_loss=1.332940
+Best round: 007 | best_val_loss=1.332940
+Best checkpoint: /DATA/vineet/PrivFedTalk/outputs_paper_abl_dp/checkpoints/federated/best_federated.pt

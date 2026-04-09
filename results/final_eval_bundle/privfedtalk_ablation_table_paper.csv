@@ -1,0 +1,6 @@
+variant,val_loss,val_identity,val_temporal,lpips_center_frame,fid_center_frame,identity_face_embedding_center_frame,temporal_jitter_full_video,sync_proxy_model_emb
+abl_adapters_only,,,,,,,,
+abl_dp_only,,,,,,,,
+abl_full,,,,,,,,
+abl_isfa_only,,,,,,,,
+abl_tdc_only,,,,,,,,

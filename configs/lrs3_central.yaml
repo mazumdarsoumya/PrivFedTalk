@@ -1,0 +1,54 @@
+#/home/vineet/PycharmProjects/PrivFedTalk/configs/lrs3_central.yaml
+
+seed: 1234
+device: auto
+output_dir: /DATA/vineet/PrivFedTalk/outputs_lrs3
+data:
+  name: lrs3
+  root: /home/vineet/PycharmProjects/PrivFedTalk/data/LRS3
+  cache_root: /DATA/vineet/PrivFedTalk/LRS3_cache
+  use_cache: true
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+  video_frames: 32
+  video_size: 128
+  audio_len: 16000
+  audio_sr: 16000
+  batch_size: 32
+  num_workers: 12
+  persistent_workers: true
+  prefetch_factor: 4
+model:
+  latent_dim: 16
+  base_channels: 64
+  timesteps: 250
+  beta_start: 0.0001
+  beta_end: 0.02
+  cond_dim: 256
+  id_dim: 256
+  lora:
+    r: 16
+    alpha: 32
+    dropout: 0.05
+    target_modules:
+    - attn_q
+    - attn_k
+    - attn_v
+    - attn_out
+train:
+  pretrain_epochs: 500
+  finetune_epochs: 500
+  patience: 12
+  pretrain_lr: 0.0001
+  finetune_lr: 2.0e-05
+  weight_decay: 5.0e-05
+  grad_clip: 0.5
+  amp: true
+  lr: 0.0001
+  epochs: 500
+loss:
+  lambda_tdc: 0.5
+  lambda_id: 0.3
+  lambda_perc: 0.15
+  lambda_sync: 0.1

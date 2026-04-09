@@ -1,0 +1,4 @@
+aggregator: isfa
+isfa:
+  alpha: 0.6
+  gamma: 2.0

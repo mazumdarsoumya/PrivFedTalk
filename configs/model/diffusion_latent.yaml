@@ -1,0 +1,5 @@
+latent_dim: 8
+base_channels: 32
+timesteps: 50
+beta_start: 0.0001
+beta_end: 0.02

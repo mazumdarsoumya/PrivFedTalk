@@ -1,0 +1,26 @@
+/home/vineet/anaconda3/envs/privfedtalk_rhel/lib/python3.10/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/home/vineet/anaconda3/envs/privfedtalk_rhel/lib/python3.10/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=AlexNet_Weights.IMAGENET1K_V1`. You can also use `weights=AlexNet_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/home/vineet/anaconda3/envs/privfedtalk_rhel/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: Metric `Kernel Inception Distance` will save all extracted features in buffer. For large datasets this may lead to large memory footprint.
+  warnings.warn(*args, **kwargs)
+Setting up [LPIPS] perceptual loss: trunk [alex], v[0.1], spatial [off]
+Loading model from: /home/vineet/anaconda3/envs/privfedtalk_rhel/lib/python3.10/site-packages/lpips/weights/v0.1/alex.pth
+{
+  "split": "test",
+  "checkpoint": "/DATA/vineet/PrivFedTalk/outputs_paper_abl_tdc_only/checkpoints/federated/best_federated.pt",
+  "num_batches": 128,
+  "metrics": {
+    "psnr_center_frame": 7.339515686035156,
+    "ssim_center_frame": 0.009682482108473778,
+    "lpips_center_frame": 1.3041845383122563,
+    "fid_center_frame": 391.3352966308594,
+    "kid_mean_center_frame": 0.510646402835846,
+    "kid_std_center_frame": 0.007967667654156685,
+    "identity_face_embedding_center_frame": 0.018286472935869824,
+    "temporal_jitter_full_video": 0.19954864692408592,
+    "sync_proxy_model_emb": 0.08339268574491143
+  },
+  "note": "FID/KID/PSNR/SSIM/LPIPS/identity are computed on center frames to keep evaluation memory-safe. temporal_jitter is computed on full videos. sync_proxy_model_emb is an internal proxy and should be replaced by SyncNet/LSE-C/LSE-D before final IEEE/ACM submission."
+}
+Wrote: /DATA/vineet/PrivFedTalk/outputs_paper_abl_tdc_only/reports/publication_metrics.json

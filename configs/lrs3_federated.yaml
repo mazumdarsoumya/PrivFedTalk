@@ -1,0 +1,116 @@
+#/home/vineet/PycharmProjects/PrivFedTalk/configs/lrs3_federated.yaml
+
+seed: 1234
+device: auto
+
+# Keep central outputs here so manifests/cache paths stay consistent
+output_dir: /DATA/vineet/PrivFedTalk/outputs_lrs3
+
+data:
+  name: lrs3
+  root: /home/vineet/PycharmProjects/PrivFedTalk/data/LRS3
+  cache_root: /DATA/vineet/PrivFedTalk/LRS3_cache
+  use_cache: true
+
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+
+  # Explicit manifest path is safer for federated runs
+  split_csv: /DATA/vineet/PrivFedTalk/outputs_lrs3/manifests/lrs3_split.csv
+
+  video_frames: 32
+  video_size: 128
+
+  audio_len: 16000
+  audio_sr: 16000
+
+  # Base dataset defaults
+  batch_size: 32
+  num_workers: 12
+  persistent_workers: true
+  prefetch_factor: 4
+
+model:
+  latent_dim: 16
+  base_channels: 64
+
+  timesteps: 250
+  beta_start: 0.0001
+  beta_end: 0.02
+
+  cond_dim: 256
+  id_dim: 256
+
+  lora:
+    r: 16
+    alpha: 32
+    dropout: 0.05
+    target_modules:
+      - attn_q
+      - attn_k
+      - attn_v
+      - attn_out
+
+train:
+  pretrain_epochs: 500
+  finetune_epochs: 500
+
+  patience: 12
+
+  pretrain_lr: 0.0001
+  finetune_lr: 0.00002
+  lr: 0.0001
+
+  weight_decay: 0.00005
+  grad_clip: 0.5
+  amp: true
+  epochs: 500
+
+loss:
+  # New objective uses diffusion loss, not the old latent-only naming
+  lambda_diffusion: 1.0
+  lambda_recon: 1.0
+  lambda_tdc: 0.25
+  lambda_id: 0.10
+  lambda_perc: 0.10
+  lambda_sync: 0.05
+
+federated:
+  output_dir: /DATA/vineet/PrivFedTalk/outputs_lrs3_federated
+
+  # Aggregation
+  agg: isfa
+  isfa_alpha: 0.5
+  isfa_gamma: 1.0
+  server_lr: 1.0
+
+  # Rounds / sampling
+  rounds: 10
+  clients_per_round: 5
+  min_client_samples: 5
+
+  # Local client optimization
+  local_epochs: 1
+  local_lr: 0.0002
+  local_weight_decay: 0.0001
+  local_batch_size: 8
+
+  # Keep workers conservative first for stability
+  local_num_workers: 0
+  local_persistent_workers: false
+  local_prefetch_factor: 2
+
+  # DP on adapter deltas
+  dp_clip_norm: 1.0
+  dp_noise_multiplier: 0.0
+
+  # Factor estimation for ISFA
+  factor_batch_size: 4
+  factor_num_workers: 0
+  factor_max_batches: 2
+
+  # Global validation per round
+  eval_batch_size: 8
+  eval_num_workers: 0
+  eval_max_batches: 8

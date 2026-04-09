@@ -1,0 +1,6 @@
+variant,config,output_dir,history_file,metrics_json,best_round,val_loss,val_identity,val_temporal,psnr_center_frame,ssim_center_frame,lpips_center_frame,fid_center_frame,kid_mean_center_frame,kid_std_center_frame,identity_face_embedding_center_frame,temporal_jitter_full_video,sync_proxy_model_emb
+abl_adapters_only,configs/paper/abl_adapters_only.yaml,/DATA/vineet/PrivFedTalk/outputs_lrs3,,,,,,,,,,,,,,,
+abl_dp_only,configs/paper/abl_dp_only.yaml,/DATA/vineet/PrivFedTalk/outputs_lrs3,,,,,,,,,,,,,,,
+abl_full,configs/paper/abl_full.yaml,/DATA/vineet/PrivFedTalk/outputs_lrs3,,,,,,,,,,,,,,,
+abl_isfa_only,configs/paper/abl_isfa_only.yaml,/DATA/vineet/PrivFedTalk/outputs_lrs3,,,,,,,,,,,,,,,
+abl_tdc_only,configs/paper/abl_tdc_only.yaml,/DATA/vineet/PrivFedTalk/outputs_lrs3,,,,,,,,,,,,,,,

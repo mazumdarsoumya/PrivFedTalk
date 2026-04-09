@@ -1,0 +1,60 @@
+seed: 1234
+device: auto
+output_dir: /DATA/vineet/PrivFedTalk/outputs_hdtf_from_fedbest
+
+data:
+  name: hdtf
+  root: /DATA/vineet/HDTF/salvaged_clips
+  split_csv: /DATA/vineet/HDTF/salvaged_clips/hdtf_splits.csv
+
+  # required by current build_manifest()
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+
+  video_frames: 64
+  video_size: 128
+  audio_len: 16000
+  audio_sr: 16000
+  batch_size: 2
+  num_workers: 0
+  persistent_workers: false
+  prefetch_factor: 2
+
+model:
+  latent_dim: 16
+  base_channels: 64
+  timesteps: 250
+  beta_start: 0.0001
+  beta_end: 0.02
+  cond_dim: 256
+  id_dim: 256
+  lora:
+    r: 16
+    alpha: 32
+    dropout: 0.05
+    target_modules:
+      - attn_q
+      - attn_k
+      - attn_v
+      - attn_out
+
+train:
+  pretrain_epochs: 500
+  finetune_epochs: 500
+  patience: 8
+  pretrain_lr: 0.0002
+  finetune_lr: 0.00005
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  amp: true
+  lr: 0.0002
+  epochs: 500
+
+loss:
+  lambda_latent: 1.0
+  lambda_recon: 1.0
+  lambda_tdc: 0.25
+  lambda_id: 0.10
+  lambda_perc: 0.10
+  lambda_sync: 0.05

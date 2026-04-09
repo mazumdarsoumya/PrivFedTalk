@@ -1,0 +1,14 @@
+\begin{table*}[t]
+\centering
+\caption{LRS3 comparison using the best validation-loss checkpoint from each finished run. The current FedProx row reflects the repository\'s 2-GPU FedProx-config path and should be interpreted cautiously.}
+\label{tab:lrs3_bestloss_current}
+\begin{tabular}{lccccccc}
+\toprule
+Method & Round & PSNR$\uparrow$ & SSIM$\uparrow$ & LPIPS$\downarrow$ & FID$\downarrow$ & ID$\uparrow$ & Temp. Jitter$\downarrow$ \\
+\midrule
+PrivFedTalk & 558 & 7.3395 & 0.009682 & 1.3042 & 391.3217 & 0.018287 & 0.199549 \\
+FedAvg (adapters) & 558 & 7.3395 & 0.009683 & 1.3042 & 391.3345 & 0.018285 & 0.199548 \\
+FedProx (2GPU-config) & 558 & 7.3395 & 0.009683 & 1.3042 & 391.3342 & 0.018289 & 0.199548 \\
+\bottomrule
+\end{tabular}
+\end{table*}

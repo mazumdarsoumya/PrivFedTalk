@@ -1,0 +1,67 @@
+seed: 1234
+device: "auto"
+output_dir: "outputs"
+
+data:
+  name: "synthetic"
+  num_clients: 20
+  non_iid: true
+  iid_fraction: 0.2
+  samples_per_client: 64
+  video_frames: 16
+  video_size: 64
+  audio_len: 16000
+  batch_size: 4
+  num_workers: 2
+
+model:
+  latent_dim: 8
+  base_channels: 32
+  timesteps: 50
+  beta_start: 0.0001
+  beta_end: 0.02
+  cond_dim: 128
+  id_dim: 128
+  lora:
+    r: 8
+    alpha: 16
+    dropout: 0.0
+    target_modules: ["attn_q","attn_k","attn_v","attn_out"]
+
+train:
+  rounds: 30
+  clients_per_round: 0.5
+  local_steps: 40
+  lr: 1.0e-3
+  weight_decay: 0.0
+  grad_clip: 1.0
+  amp: true
+  save_every_rounds: 5
+  resume: true
+  resume_from: best
+
+loss:
+  lambda_tdc: 0.3
+  lambda_id: 0.2
+  lambda_perc: 0.1
+  lambda_sync: 0.1
+
+fl:
+  aggregator: "isfa"   # fedavg | fedprox | isfa
+  fedprox_mu: 0.01
+  isfa:
+    alpha: 0.6
+    gamma: 2.0
+
+privacy:
+  enable_secure_agg: true
+  enable_client_dp: true
+  dp:
+    clip_norm: 1.0
+    noise_mult: 0.3
+    seed: 999
+
+eval:
+  num_batches: 10
+  save_qualitative: true
+  qual_examples: 8

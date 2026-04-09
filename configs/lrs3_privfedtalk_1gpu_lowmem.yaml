@@ -1,0 +1,81 @@
+seed: 1234
+device: auto
+output_dir: /home/vineet/PycharmProjects/PrivFedTalk/outputs/federated_1gpu_lowmem
+
+data:
+  name: lrs3
+  root: /home/vineet/PycharmProjects/PrivFedTalk/data/LRS3
+  split_csv: /home/vineet/PycharmProjects/PrivFedTalk/outputs/federated_1gpu_lowmem/manifests/lrs3_split.csv
+  cache_root: /home/vineet/PycharmProjects/PrivFedTalk/data/LRS3_cache
+  use_cache: true
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+  video_frames: 32
+  video_size: 128
+  audio_len: 16000
+  audio_sr: 16000
+  batch_size: 1
+  num_workers: 0
+  persistent_workers: false
+  prefetch_factor: 2
+
+model:
+  latent_dim: 16
+  base_channels: 64
+  timesteps: 250
+  beta_start: 0.0001
+  beta_end: 0.02
+  cond_dim: 256
+  id_dim: 256
+  lora:
+    r: 8
+    alpha: 16
+    dropout: 0.05
+    target_modules:
+      - attn_q
+      - attn_k
+      - attn_v
+      - attn_out
+
+train:
+  patience: 12
+  finetune_lr: 2.0e-05
+  weight_decay: 5.0e-05
+  grad_clip: 0.25
+  amp: true
+  amp_dtype: bf16
+  lr: 0.0001
+  epochs: 500
+  grad_accum_steps: 1
+
+loss:
+  lambda_tdc: 0.05
+  lambda_id: 0.10
+  lambda_perc: 0.10
+  lambda_sync: 0.05
+
+federated:
+  output_dir: /home/vineet/PycharmProjects/PrivFedTalk/outputs/federated_1gpu_lowmem
+  rounds: 20
+  patience: 0
+  clients_per_round: 1
+  min_client_samples: 1
+  local_epochs: 1
+  local_lr: 5.0e-06
+  local_weight_decay: 5.0e-05
+  local_batch_size: 1
+  local_num_workers: 0
+  eval_batch_size: 1
+  eval_num_workers: 0
+  eval_max_batches: 8
+  agg: isfa
+  prox_mu: 0.0
+  dp_clip_norm: 1.0
+  dp_noise_multiplier: 0.0
+  isfa_alpha: 0.7
+  isfa_gamma: 0.5
+  server_lr: 0.5
+
+runtime:
+  num_gpus: 1

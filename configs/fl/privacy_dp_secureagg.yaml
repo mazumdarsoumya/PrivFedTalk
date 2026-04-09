@@ -1,0 +1,7 @@
+privacy:
+  enable_secure_agg: true
+  enable_client_dp: true
+  dp:
+    clip_norm: 1.0
+    noise_mult: 0.3
+    seed: 999
