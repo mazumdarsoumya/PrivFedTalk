@@ -1,0 +1,5 @@
+[console_scripts]
+privfedtalk-eval = privfedtalk.cli.eval:main
+privfedtalk-export = privfedtalk.cli.export_artifacts:main
+privfedtalk-infer = privfedtalk.cli.infer:main
+privfedtalk-train = privfedtalk.cli.train_federated:main
